@@ -1,0 +1,20 @@
+{
+  "name": "bitvault-joran_coen",
+  "version": "1.0.0",
+  "description": "[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/RN63TLFQ)\r # Base MVC",
+  "main": "index.php",
+  "scripts": {
+    "build": "tailwindcss -i ./public/css/input.css -o ./public/css/main.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13"
+  },
+  "devDependencies": {
+    "daisyui": "^4.12.14"
+  }
+}
