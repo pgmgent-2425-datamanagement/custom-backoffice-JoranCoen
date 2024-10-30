@@ -4,3 +4,5 @@
 $router->setNamespace('\App\Controllers');
 $router->get('/', 'HomeController@index');
 $router->get('/transactions', 'transactionsController@transactions');
+$router->get('/wallets', 'walletsController@wallets');
+$router->get('/settings', 'settingsController@settings');
