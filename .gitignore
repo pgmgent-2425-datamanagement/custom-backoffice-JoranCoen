@@ -1,4 +1,4 @@
 .env
 composer.lock
 vendor
-./public/css/main.css
+/public/css/main.css
