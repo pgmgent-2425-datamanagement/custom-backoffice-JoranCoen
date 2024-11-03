@@ -9,10 +9,10 @@
 </head>
 <body class="flex w-full min-h-screen">
 
-<?php include BASE_DIR . '/views/_partials/navigation.php'; ?>
+<?php include BASE_DIR . '/views/_partials/_navigation.php'; ?>
 
-<main class="flex flex-col relative w-full overflow-x-hidden">
-    <?php include BASE_DIR . '/views/_partials/header.php'; ?>
+<main class="flex flex-col relative w-full">
+    <?php include BASE_DIR . '/views/_partials/_header.php'; ?>
     <div class="p-6">
         <?= $content; ?>
     </div>

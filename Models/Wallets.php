@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-class Transaction extends BaseModel {
-    protected $table = 'transactions';  
-    protected $pk = 'transaction_id';
+class Wallet extends BaseModel {
+    protected $table = 'wallets';  
+    protected $pk = 'wallet_id';
 
     public function getCoin() {
         $coinModel = new Coin(); 

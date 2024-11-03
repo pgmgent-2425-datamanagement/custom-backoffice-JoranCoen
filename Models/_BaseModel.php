@@ -3,60 +3,52 @@ namespace App\Models;
 
 #[\AllowDynamicProperties]
 class BaseModel {
-
     protected $table;
     protected $pk;
     protected $db;
 
-    public static function __callStatic ($method, $arg) {
+    public static function __callStatic($method, $arg) {
         $obj = new static;
-        $result = call_user_func_array (array ($obj, $method), $arg);
-        if (method_exists ($obj, $method))
-            return $result;
-        return $obj;
+        if (is_callable([$obj, $method])) {
+            return call_user_func_array([$obj, $method], $arg);
+        }
+        throw new \Exception("Method $method does not exist");
     }
 
-    public function __construct() {
-
-        if(!isset($this->table)) {
-            $single = strtolower( $this->getClassName(get_called_class()));
-            switch(substr($single, -1)) {
+    public function __construct($db = null) {
+        $this->db = $db ?: $GLOBALS['db'];
+        
+        if (!isset($this->table)) {
+            $single = strtolower($this->getClassName(get_called_class()));
+            switch (substr($single, -1)) {
                 case 'y':
-                    //for example: Category model => categories table
                     $this->table = substr($single, 0, -1) . 'ies';
                     break;
                 case 's':
-                    //for example: News model => news table
                     $this->table = $single;
                     break;
                 default:
-                    //for example: User model => users table
-                    $this->table .= $single . 's';
+                    $this->table = $single . 's';
             }
         }
-        if(!isset($this->pk)) {
+        
+        if (!isset($this->pk)) {
             $this->pk = 'id';
-        }
-        if(!isset($this->db)) {
-            global $db;
-            $this->db = $db;
         }
     }
 
     public function all(int $limit = 100, int $offset = 0) {
         $sql = 'SELECT * FROM `' . $this->table . '` LIMIT :limit OFFSET :offset';
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
-
-        $db_items = $stmt->fetchAll();
-
-        return self::castToModel($db_items);
+        
+        return $this->castToModel($stmt->fetchAll());
     }
 
-    private function find ( int $id ) {
-        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->pk . '` = :p_id';
+    public function find ( int $id ) {
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE ' . $this->pk . ' = :p_id';
         $pdo_statement = $this->db->prepare($sql);
         $pdo_statement->execute( [ ':p_id' => $id ] );
 
@@ -65,32 +57,35 @@ class BaseModel {
         return self::castToModel($db_item);
     }
 
-    protected function castToModel ($object) {
-        if(!is_object($object) && isset($object[0]) && is_array($object[0])) {
-            $items = [];
-            foreach($object as $db_item) {
-                $items[] = $this->castToModel($db_item);
-            }
-            return $items;
+    public function findById(int $id) {
+        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->pk . '` = :p_id';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':p_id' => $id]);
+
+        return $this->castToModel($stmt->fetch(\PDO::FETCH_ASSOC));
+    }
+
+    protected function castToModel($object) {
+        if (is_array($object) && isset($object[0]) && is_array($object[0])) {
+            return array_map(fn($item) => $this->castToModel($item), $object);
         }
-        $db_item = (object) $object;
-        $model_name = get_class($this);
-        $item = new $model_name();
-        
-        foreach($db_item as $column => $value) {
+        if (empty($object)) return null;
+
+        $item = new static();
+        foreach ((array)$object as $column => $value) {
             $item->{$column} = $value;
-        } 
+        }
         return $item;
     }
 
-    private function deleteById ( int $id ) {
-        $sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $id . '` = :p_id';
-        $pdo_statement = $this->db->prepare($sql);
-        return $pdo_statement->execute( [ ':p_id' => $id ] );
+    public function delete() {
+        return $this->deleteById($this->{$this->pk});
     }
 
-    public function delete () {
-        $this->deleteById( $this->pk );
+    public function deleteById(int $id) {
+        $sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->pk . '` = :p_id';
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([':p_id' => $id]);
     }
 
     public function update(int $id, array $data) {
@@ -108,10 +103,6 @@ class BaseModel {
     }
 
     private function getClassName($classname) {
-        if(strpos($classname, '\\') === false) {
-            return $classname;
-        }
-        return (substr($classname, strrpos($classname, '\\') + 1));
+        return strpos($classname, '\\') === false ? $classname : substr($classname, strrpos($classname, '\\') + 1);
     }
-
 }
