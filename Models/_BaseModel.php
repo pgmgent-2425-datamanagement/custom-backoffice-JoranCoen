@@ -55,7 +55,6 @@ class BaseModel {
         return self::castToModel($db_items);
     }
 
-
     private function find ( int $id ) {
         $sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->pk . '` = :p_id';
         $pdo_statement = $this->db->prepare($sql);

@@ -6,10 +6,16 @@ module.exports = {
     './views/**/*.php',
   ],
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        21: '5rem',
+      }
+    },
+  },
+  daisyui: {
+    themes: ["light", "dark", "cupcake"],
   },
   plugins: [
     daisyui,
   ],
 }
-
