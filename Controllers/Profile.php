@@ -4,15 +4,15 @@ namespace App\Controllers;
 
 use App\Models\Notification;
 
-class SettingsController extends BaseController {
-    public static function settings () {
+class ProfileController extends BaseController {
+    public static function profile() {
         $notificationModel = new Notification();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
         $notifications = $notificationModel->findByUserId($userId);
 
-        self::loadView('/settings', [
-            'title' => 'Settings',
+        self::loadView('/profile', [
+            'title' => 'Profile',
             'notifications' => $notifications
         ]);
     }

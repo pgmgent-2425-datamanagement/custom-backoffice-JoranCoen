@@ -4,7 +4,11 @@ import daisyui from "daisyui";
 module.exports = {
   content: ["./views/**/*.php"],
   theme: {
-    extend: {}, 
+    extend: {
+      height: {
+        '212': '53rem',
+      },
+    },
   },
   plugins: [
     daisyui,
@@ -12,4 +16,4 @@ module.exports = {
   daisyui: {
     themes: ["light", "dark", "cupcake"],
   },
-}
+};

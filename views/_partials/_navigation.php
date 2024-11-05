@@ -1,11 +1,5 @@
-<nav class="sticky bg-base-300">
-    <div class="flex justify-around items-center gap-4 p-6">
-        <a class="text-2xl font-bold">BitVault</a>
-        <button class="btn btn-sm">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 3V21M21 12H7M7 12L14 19M7 12L14 5" stroke="#828894" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-        </button>
-    </div>
-    <ul class="menu menu-vertical flex flex-col space-y-2 border-t-2 border-base-100">
+<nav id="menu" class="sticky top-20 z-50 self-start h-212 w-64 border-t-2 border-base-100 bg-base-300 overflow-auto duration-300 ease-in-out">
+    <ul class="menu menu-vertical space-y-2">
         <li>
             <details open>
                 <summary>
@@ -17,8 +11,8 @@
                     </a>
                 </summary>
                 <ul>
-                    <li><a>Submenu 1</a></li>
-                    <li><a>Submenu 2</a></li>
+                    <li><a href="/#users">Users</a></li>
+                    <li><a href="/#coins">Coins</a></li>
                 </ul>
             </details>
         </li>
@@ -30,10 +24,6 @@
                         Transactions
                     </a>
                 </summary>
-                <ul>
-                    <li><a>Submenu 1</a></li>
-                    <li><a>Submenu 2</a></li>
-                </ul>
             </details>
         </li>
         <li>
@@ -44,10 +34,6 @@
                         Wallets
                     </a>
                 </summary>
-                <ul>
-                    <li><a>Submenu 1</a></li>
-                    <li><a>Submenu 2</a></li>
-                </ul>
             </details>
         </li>
         <li>
@@ -58,10 +44,6 @@
                         Settings
                     </a>
                 </summary>
-                <ul>
-                    <li><a>Submenu 1</a></li>
-                    <li><a>Submenu 2</a></li>
-                </ul>
             </details>
         </li>
     </ul>
