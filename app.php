@@ -50,6 +50,8 @@ $router->post('/profile', 'UserController@update', $checkAuth);
 $router->post('/user/(\d+)', 'UserController@update', $checkAuth);
 $router->post('/wallet/(\d+)', 'WalletController@update', $checkAuth);
 $router->post('/transaction/(\d+)', 'TransactionController@update', $checkAuth);
+$router->post('/file-manager/upload', 'FileManagerController@upload', $checkAuth);
+$router->post('/file-manager/delete', 'FileManagerController@delete', $checkAuth);
 
 $router->get('/', 'DashboardController@dashboard');
 $router->get('/user/(\d+)', 'DashboardController@userDetail');
@@ -59,7 +61,7 @@ $router->get('/transactions/(\d+)', 'TransactionsPageController@detail');
 $router->get('/wallets', 'WalletsPageController@wallets');
 $router->get('/wallets/(\d+)', 'WalletsPageController@detail');
 $router->get('/profile', 'ProfileController@profile');
-$router->get('/files', 'FilesPageController@files');
+$router->get('/file-manager', 'FileManagerPageController@fileManager');
 $router->get('/settings', 'SettingsPageController@settings');
 
 $router->run();

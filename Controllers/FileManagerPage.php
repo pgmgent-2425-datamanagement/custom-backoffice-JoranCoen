@@ -4,15 +4,15 @@ namespace App\Controllers;
 
 use App\Models\Notification;
 
-class FilesPageController extends BaseController {
-    public static function files () {
+class FileManagerPageController extends BaseController {
+    public static function fileManager () {
         $notificationModel = new Notification();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
         $notifications = $notificationModel->findByUserId($userId);
 
-        self::loadView('/files', [
-            'title' => 'Files',
+        self::loadView('/file-manager', [
+            'title' => 'File Manager',
             'notifications' => $notifications
         ]);
     }
