@@ -1,18 +1,12 @@
 <div class="flex flex-col gap-4 p-10 w-full">
-    <div class="flex items-center justify-between">
-        <div>
-            <h1 class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>
-            <div class="breadcrumbs text-sm px-2">
-                <ul>
-                    <li><a href="/">Dashboard</a></li>
-                    <li><?= htmlspecialchars($title) ?></li>
-                </ul>
-            </div>
-        </div>
-        <div>
-            <form action="logout?action=logout" method="POST" class="px-4">
-                <button type="submit" class="btn">Logout</button>
-            </form>
+    <div>
+        <h1 class="text-2xl font-bold"><?= htmlspecialchars($title) ?></h1>
+        <div class="breadcrumbs text-sm px-2">
+            <ul>
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/#users">Users</a></li>
+                <li><?= htmlspecialchars($title) ?> <?= htmlspecialchars($user->user_id) ?></li>
+            </ul>
         </div>
     </div>
     <div class="overflow-x-auto px-4">
@@ -20,13 +14,9 @@
             <div class="flex flex-col gap-4">
                 <?php 
                 $currentUser = $_SESSION['user'] ?? null;
-                $canEdit = $currentUser && (
-                    $currentUser['user_id'] === $user->user_id || 
-                    in_array($currentUser['role'], ['admin', 'moderator'])
-                );
-                if ($canEdit): 
+                if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])): 
                 ?>
-                    <form action="profile?action=update" method="POST" enctype="multipart/form-data" class="flex gap-10">
+                    <form action="/user/<?= htmlspecialchars($user->user_id) ?>?action=update" method="POST" class="flex gap-10">
                         <input type="hidden" name="user_id" value="<?= htmlspecialchars($user->user_id) ?>">
 
                         <div class="space-y-4 w-1/2">
@@ -62,18 +52,13 @@
                                 <label for="created_at" class="block text-sm font-medium">Created At:</label>
                                 <input type="text" id="created_at" name="created_at" value="<?= htmlspecialchars($user->created_at) ?>" class="input input-bordered w-full" readonly>
                             </div>
-
+                            
                             <div class="space-y-2">
-                                <label for="profile_picture" class="block text-sm font-medium">Profile Picture:</label>
-                                <input type="file" id="profile_picture" name="profile_picture" class="file-input file-input-bordered w-full max-w-xs">
-                            </div>
-                                                
-                            <div>
                                 <button type="submit" class="btn">Update User</button>
                             </div>
                         </div>
 
-                        <div class="space-y-4 w-1/2">
+                        <div class="space-y-4 w-1/2 ">
                             <?php if (isset($user->wallets) && is_array($user->wallets) && count($user->wallets) > 0): ?>
                                 <?php foreach ($user->wallets as $index => $wallet): ?>
                                     <div class="collapse collapse-plus bg-base-200">
@@ -110,6 +95,5 @@
         <?php else: ?>
             <p>User not found.</p>
         <?php endif; ?>
-    </div>
     </div>
 </div>

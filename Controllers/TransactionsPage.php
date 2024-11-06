@@ -2,10 +2,11 @@
 
 namespace App\Controllers;
 
+use App\Models\Coin;
 use App\Models\Transaction;
 use App\Models\Notification;
 
-class TransactionsController extends BaseController {
+class TransactionsPageController extends BaseController {
     public static function transactions() {
         $transactionModel = new Transaction();
         $notificationModel = new Notification();
@@ -29,6 +30,7 @@ class TransactionsController extends BaseController {
 
     public static function detail($id) {
         $transactionModel = new Transaction();
+        $coinModel = new Coin();
         $notificationModel = new Notification();
     
         $transaction = $transactionModel->findById($id);
@@ -47,6 +49,7 @@ class TransactionsController extends BaseController {
 
             self::loadView('/transactionDetail', [
                 'title' => 'Transaction',
+                'coins' => $coinModel->all(),
                 'transaction' => $transaction,
                 'notifications' => $notifications
             ]);

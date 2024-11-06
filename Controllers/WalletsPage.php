@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Models\Wallet;
 use App\Models\Notification;
 
-class WalletsController extends BaseController {
+class WalletsPageController extends BaseController {
     public static function wallets() {
         $walletModel = new Wallet();
         $notificationModel = new Notification();

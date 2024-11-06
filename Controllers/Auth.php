@@ -3,12 +3,10 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use App\Models\Notification;
 
 class AuthController extends BaseController {
     public function login() {
         $userModel = new User();
-        $notificationModel = new Notification();
     
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'] ?? '';

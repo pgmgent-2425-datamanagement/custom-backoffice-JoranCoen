@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-4 p-10 w-full bg-base-100">
     <div>
-        <h1 class="text-2xl font-bold"><?= htmlspecialchars($title) ?></h1>
+        <h1 class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>
         <div class="breadcrumbs text-sm px-2">
             <ul>
                 <li><a href="/">Dashboard</a></li>

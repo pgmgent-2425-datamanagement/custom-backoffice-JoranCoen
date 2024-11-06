@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Notification;
 
-class SettingsController extends BaseController {
+class SettingsPageController extends BaseController {
     public static function settings () {
         $notificationModel = new Notification();
 

@@ -83,6 +83,15 @@ class BaseModel {
         return $this->castToModel($stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
+    public function getAllWalletsByUserId(int $userId) {
+        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `user_id` = :p_id';
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':p_id' => $userId]);
+    
+        return $this->castToModel($stmt->fetchAll(\PDO::FETCH_ASSOC)); 
+    }
+    
+
     protected function castToModel($object) {
         if (is_array($object) && isset($object[0]) && is_array($object[0])) {
             return array_map(fn($item) => $this->castToModel($item), $object);

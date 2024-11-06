@@ -68,7 +68,7 @@
     </div>
     <a href="/profile" class="flex items-center gap-2">
         <?php if (isset($_SESSION['user'])): ?>
-            <img src="https://avatar.iran.liara.run/public" class="w-10 h-10 rounded-full" alt="avatar" />
+            <img src="<?= htmlspecialchars($_SESSION['user']['profile_picture'] ?? 'https://avatar.iran.liara.run/public') ?>" class="w-10 h-10 rounded-full" alt="avatar" />
             <div class="text-nowrap">
                 <p class="text-lg font-bold"><?= htmlspecialchars($_SESSION['user']['username']) ?></p>
                 <p class="text-xs"><?= htmlspecialchars($_SESSION['user']['role'] ?? 'User') ?></p>

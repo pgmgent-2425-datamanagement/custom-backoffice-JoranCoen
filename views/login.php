@@ -1,7 +1,7 @@
 <div class="hero">
     <div class="hero-content flex-col lg:flex-row w-full">
         <div class="text-center lg:text-left">
-            <h2 class="text-5xl font-bold">Login now!</h2>
+            <h2 class="text-5xl font-bold"><?= htmlspecialchars($title) ?></h2>
             <p class="py-6">
                 Don't have an account? 
                 <a href="#" class="link link-hover">Sign up here</a>

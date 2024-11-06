@@ -1,5 +1,7 @@
 <?php
 
+use Bramus\Router\Router;
+
 require_once __DIR__ . '/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -38,19 +40,26 @@ $router->post('/login', 'AuthController@login');
 $router->before('GET', '/', $checkAuth);
 $router->before('GET', '/transactions', $checkAuth);
 $router->before('GET', '/wallets', $checkAuth);
+$router->before('GET', '/user', $checkAuth);
 $router->before('GET', '/profile', $checkAuth);
+$router->before('GET', '/files', $checkAuth);
 $router->before('GET', '/settings', $checkAuth);
 
-$router->get('/logout', 'AuthController@logout'); 
+$router->post('/logout', 'AuthController@logout', $checkAuth);
+$router->post('/profile', 'UserController@update', $checkAuth);
+$router->post('/user/(\d+)', 'UserController@update', $checkAuth);
+$router->post('/wallet/(\d+)', 'WalletController@update', $checkAuth);
+$router->post('/transaction/(\d+)', 'TransactionController@update', $checkAuth);
 
 $router->get('/', 'DashboardController@dashboard');
+$router->get('/user/(\d+)', 'DashboardController@userDetail');
 $router->get('/notifications', 'NotificationsController@notifications');
-$router->get('/transactions', 'TransactionsController@transactions');
-$router->get('/transactions/(\d+)', 'TransactionsController@detail');
-$router->get('/wallets', 'WalletsController@wallets');
-$router->get('/wallets/(\d+)', 'WalletsController@detail');
+$router->get('/transactions', 'TransactionsPageController@transactions');
+$router->get('/transactions/(\d+)', 'TransactionsPageController@detail');
+$router->get('/wallets', 'WalletsPageController@wallets');
+$router->get('/wallets/(\d+)', 'WalletsPageController@detail');
 $router->get('/profile', 'ProfileController@profile');
-$router->get('/settings', 'SettingsController@settings');
+$router->get('/files', 'FilesPageController@files');
+$router->get('/settings', 'SettingsPageController@settings');
 
-// Run the router
 $router->run();
