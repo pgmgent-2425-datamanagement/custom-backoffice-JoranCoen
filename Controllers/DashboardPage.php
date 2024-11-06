@@ -4,47 +4,47 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Models\Coin;
-use App\Models\Notification;
 
 class DashboardController extends BaseController {
     public static function dashboard() {
         $userModel = new User();
         $coinModel = new Coin();
-        
+
+        $users = $userModel->all();
         $coins = $coinModel->all();
 
         foreach ($coins as $coin) {
             $coin->prices = $coin->getPrices();
         }
-        $notificationModel = new Notification();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
-        $notifications = $notificationModel->findByUserId($userId);
+
+        $user = $userModel->findById($userId);
+
+        $notifications = $user->getNotifications();
 
         self::loadView('/dashboard', [
             'title' => 'Dashboard',
-            'users' => $userModel->all(),
-            'notifications' => $notifications,
-            'coins' => $coins
+            'users' => $users,
+            'coins' => $coins,
+            'notifications' => $notifications
         ]);
     }
+
     public static function userDetail($id) {
         $userModel = new User();
-        $notificationModel = new Notification();
-    
-        $user = $userModel->findById($id);
-        $userId = $_SESSION['user']['user_id'] ?? 0;
-        $notifications = $notificationModel->findByUserId($userId);
-    
-        if ($user) {
 
+        $user = $userModel->findById($id);
+
+        if ($user) {
             $user->wallets = $user->getWallets();
-    
 
             foreach ($user->wallets as $wallet) {
-                $wallet->coin = $wallet->getCoin(); 
+                $wallet->coin = $wallet->getCoin();
             }
-    
+
+            $notifications = $user->getNotifications();
+
             self::loadView('/userDetail', [
                 'title' => 'User',
                 'user' => $user,
@@ -57,5 +57,4 @@ class DashboardController extends BaseController {
             ]);
         }
     }
-    
 }

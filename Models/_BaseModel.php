@@ -33,7 +33,6 @@ class BaseModel {
             }
         }
 
-        // Default primary key
         if (!isset($this->pk)) {
             $this->pk = 'id';
         }
@@ -60,37 +59,21 @@ class BaseModel {
     }
 
     public function findById(int $id) {
-        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $this->pk . '` = :p_id';
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE ' . $this->pk . ' = :p_id';
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':p_id' => $id]);
 
         return $this->castToModel($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
-    public function findByUserId(int $id) {
-        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `user_id` = :p_id';
+    public function findByColumn(string $column, int $value, bool $single = true) {
+        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `' . $column . '` = :value';
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':p_id' => $id]);
-
-        return $this->castToModel($stmt->fetchAll(\PDO::FETCH_ASSOC));
-    }
-
-    public function findByCoinId(int $id) {
-        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `coin_id` = :p_id';
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':p_id' => $id]);
-
-        return $this->castToModel($stmt->fetchAll(\PDO::FETCH_ASSOC));
-    }
-
-    public function getAllWalletsByUserId(int $userId) {
-        $sql = 'SELECT * FROM `' . $this->table . '` WHERE `user_id` = :p_id';
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':p_id' => $userId]);
+        $stmt->execute([':value' => $value]);
     
-        return $this->castToModel($stmt->fetchAll(\PDO::FETCH_ASSOC)); 
-    }
-    
+        $result = $single ? $stmt->fetch(\PDO::FETCH_ASSOC) : $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->castToModel($result);
+    }    
 
     protected function castToModel($object) {
         if (is_array($object) && isset($object[0]) && is_array($object[0])) {

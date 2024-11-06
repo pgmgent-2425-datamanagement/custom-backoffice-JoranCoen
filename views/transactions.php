@@ -8,7 +8,7 @@
             </ul>
         </div>
     </div>
-    <div class="overflow-x-auto w-full">
+    <div class="w-full">
         <?php if (!empty($transactions)): ?>
             <div class="table divide-y">
                 <div class="table-header-group">

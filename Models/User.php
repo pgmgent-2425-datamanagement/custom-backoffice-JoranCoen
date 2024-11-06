@@ -8,6 +8,11 @@ class User extends BaseModel {
 
     public function getWallets() {
         $walletModel = new Wallet(); 
-        return $walletModel->getAllWalletsByUserId($this->user_id); 
-    }    
+        return $walletModel->findByColumn('user_id', $this->{$this->pk}, false); 
+    }
+
+    public function getNotifications() {
+        $notificationModel = new Notification();
+        return $notificationModel->findByColumn('user_id', $this->{$this->pk}, false);
+    }
 }

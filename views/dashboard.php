@@ -39,7 +39,7 @@ function format($amount) {
         </div>
     </div>
 
-    <div  class="overflow-x-auto px-4 space-y-4">
+    <div class="px-4 space-y-4">
         <h2 class="text-2xl font-bold">Users</h2>
         <?php if (!empty($users)): ?>
             <div class="table divide-y">
@@ -69,7 +69,7 @@ function format($amount) {
         <?php endif; ?>
     </div>
     
-    <div id="coins" class="overflow-x-auto px-4 space-y-4"> 
+    <div id="coins" class="px-4"> 
         <div class="flex flex-shrink items-center w-full">
             <div class="stats stats-vertical p-24 h-180">
                 <?php foreach ($coins as $index => $coin): ?>

@@ -2,19 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Models\User;
 use App\Models\Coin;
 use App\Models\Transaction;
-use App\Models\Notification;
 
 class TransactionsPageController extends BaseController {
     public static function transactions() {
+        $userModel = new User();
         $transactionModel = new Transaction();
-        $notificationModel = new Notification();
-
-        $transactions = $transactionModel->all();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
-        $notifications = $notificationModel->findByUserId($userId);
+
+        $user = $userModel->findById($userId);
+
+        $notifications = $user->getNotifications();
+
+        $transactions = $transactionModel->all();
 
         foreach ($transactions as $transaction) {
             $transaction->coin = $transaction->getCoin();
@@ -29,15 +32,16 @@ class TransactionsPageController extends BaseController {
     }
 
     public static function detail($id) {
-        $transactionModel = new Transaction();
+        $userModel = new User();
         $coinModel = new Coin();
-        $notificationModel = new Notification();
-    
-        $transaction = $transactionModel->findById($id);
+        $transactionModel = new Transaction();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
-        $notifications = $notificationModel->findByUserId($userId);
+
+        $user = $userModel->findById($userId);
+        $notifications = $user->getNotifications();
         
+        $transaction = $transactionModel->findById($id);
 
         if ($transaction) {
             if (isset($transaction->coin_id)) {

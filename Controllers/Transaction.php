@@ -26,6 +26,7 @@ class TransactionController extends BaseController {
         $status = $_POST['status'] ?? null;
         $fee = $_POST['fee'] ?? null;
         $notes = $_POST['notes'] ?? null;
+        $date = $_POST['date'] ?? null;
 
         if (!$amount || !$coin_id || !$transaction_type || !$status || !$fee) {
             self::loadView('/error', [
@@ -55,7 +56,8 @@ class TransactionController extends BaseController {
             'transaction_type' => htmlspecialchars($transaction_type),
             'status' => htmlspecialchars($status),
             'fee' => htmlspecialchars($fee),
-            'notes' => htmlspecialchars($notes)
+            'notes' => htmlspecialchars($notes),
+            'transaction_date' => htmlspecialchars($date)
         ]);
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);

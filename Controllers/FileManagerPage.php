@@ -2,14 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Models\Notification;
+use App\Models\User;
 
 class FileManagerPageController extends BaseController {
     public static function fileManager () {
-        $notificationModel = new Notification();
+        $userModel = new User();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
-        $notifications = $notificationModel->findByUserId($userId);
+
+        $user = $userModel->findById($userId);
+        $notifications = $user->getNotifications();
 
         self::loadView('/file-manager', [
             'title' => 'File Manager',

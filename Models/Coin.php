@@ -10,6 +10,6 @@ class Coin extends BaseModel {
 
     public function getPrices() {
         $coinPriceModel = new CoinPrice(); 
-        return $coinPriceModel->findByCoinId($this->coin_id); 
+        return $coinPriceModel->findByColumn('coin_id', $this->coin_id, false);
     }
 }

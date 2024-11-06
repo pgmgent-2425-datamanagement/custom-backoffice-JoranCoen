@@ -2,20 +2,22 @@
 
 namespace App\Controllers;
 
+use App\Models\User;
 use App\Models\Wallet;
-use App\Models\Notification;
 
 class WalletsPageController extends BaseController {
     public static function wallets() {
+        $userModel = new User();
         $walletModel = new Wallet();
-        $notificationModel = new Notification();
+
+        $userId = $_SESSION['user']['user_id'] ?? 0;
+
+        $user = $userModel->findById($userId);
+        $notifications = $user->getNotifications();
 
         $wallets = $walletModel->all();
 
-        $userId = $_SESSION['user']['user_id'] ?? 0;
-        $notifications = $notificationModel->findByUserId($userId);
-
-        foreach ($wallets as $wallet) {
+        foreach ($wallets as &$wallet) {
             if (isset($wallet->coin_id)) {
                 $wallet->coin = $wallet->getCoin();
             }
@@ -32,13 +34,15 @@ class WalletsPageController extends BaseController {
     }
 
     public static function detail($id) {
+        $userModel = new User();
         $walletModel = new Wallet();
-        $notificationModel = new Notification();
-
-        $wallet = $walletModel->findById($id);
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
-        $notifications = $notificationModel->findByUserId($userId);
+
+        $user = $userModel->findById($userId);
+        $notifications = $user->getNotifications();
+
+        $wallet = $walletModel->findById($id);
 
         if ($wallet) {
             if (isset($wallet->coin_id)) {
@@ -47,6 +51,8 @@ class WalletsPageController extends BaseController {
             if (isset($wallet->user_id)) {
                 $wallet->user = $wallet->getUser();
             }
+
+            $wallet->transactions = $wallet->getTransactions();
 
             self::loadView('/walletDetail', [
                 'title' => 'Wallet',

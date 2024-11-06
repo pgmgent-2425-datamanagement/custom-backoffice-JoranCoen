@@ -9,9 +9,8 @@
             </ul>
         </div>
     </div>
-    <div class="overflow-x-auto px-4">
+    <div class="px-4">
         <?php if ($user): ?>
-            <div class="flex flex-col gap-4">
                 <?php 
                 $currentUser = $_SESSION['user'] ?? null;
                 if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])): 
@@ -58,7 +57,7 @@
                             </div>
                         </div>
 
-                        <div class="space-y-4 w-1/2 ">
+                        <div class="overflow-y-auto space-y-4 w-1/2 h-150">
                             <?php if (isset($user->wallets) && is_array($user->wallets) && count($user->wallets) > 0): ?>
                                 <?php foreach ($user->wallets as $index => $wallet): ?>
                                     <div class="collapse collapse-plus bg-base-200">
@@ -91,7 +90,6 @@
                         <span><strong>Created At:</strong> <?= htmlspecialchars($user->created_at) ?></span>
                     </div>
                 <?php endif; ?>
-            </div>
         <?php else: ?>
             <p>User not found.</p>
         <?php endif; ?>
