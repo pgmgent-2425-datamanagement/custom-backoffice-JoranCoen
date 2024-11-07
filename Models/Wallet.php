@@ -17,11 +17,13 @@ class Wallet extends BaseModel {
     }
 
     public function getTransactions() {
-        $transactionModel = new Transaction(); 
+        $transactionModel = new Transaction();
         $transactions = $transactionModel->findByColumn('wallet_id', $this->wallet_id, false);
         
-        foreach ($transactions as $transaction) {
-            $transaction->coin = $transaction->getCoin();
+        if (!empty($transactions)) {
+            foreach ($transactions as $transaction) {
+                $transaction->coin = $transaction->getCoin();
+            }
         }
     
         return $transactions;

@@ -113,7 +113,7 @@ class BaseModel {
     }
 
     public function authenticate(string $username, string $password) {
-        $sql = 'SELECT user_id, username, password_hash, role FROM `' . $this->table . '` WHERE `username` = :username';
+        $sql = 'SELECT user_id, username, password_hash, role, profile_picture FROM `' . $this->table . '` WHERE `username` = :username';
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':username' => $username]);
     

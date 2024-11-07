@@ -1,4 +1,4 @@
-name: BaseMVC
+name: BitVault
 type: php
 docroot: public
 php_version: "8.2"

@@ -3,8 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use App\Models\Notification;
-
 class ProfileController extends BaseController {
     public static function profile() {
         $userModel = new User();

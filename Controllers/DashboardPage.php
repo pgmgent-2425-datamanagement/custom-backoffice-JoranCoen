@@ -39,8 +39,11 @@ class DashboardController extends BaseController {
         if ($user) {
             $user->wallets = $user->getWallets();
 
-            foreach ($user->wallets as $wallet) {
-                $wallet->coin = $wallet->getCoin();
+            if (!empty($user->wallets)) {
+                foreach ($user->wallets as $wallet) {
+                    $wallet->coin = $wallet->getCoin();
+                }
+    
             }
 
             $notifications = $user->getNotifications();

@@ -11,7 +11,10 @@
     </div>
     <div class="px-4">
         <?php if ($wallet): ?>
-            <div class="flex flex-col space-y-4">
+            <?php 
+            $currentUser = $_SESSION['user'] ?? null;
+            if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])): 
+            ?>
                 <form action="/wallet/<?= htmlspecialchars($wallet->wallet_id) ?>?action=update" method="POST" class="flex gap-10">
                     <input type="hidden" name="wallet_id" value="<?= htmlspecialchars($wallet->wallet_id) ?>">
 
@@ -69,7 +72,41 @@
                         <?php endif; ?>
                     </div>
                 </form>
-            </div>
+            <?php else: ?>
+                <div class="flex gap-10">
+                    <div class="flex flex-col space-y-4 w-1/2">
+                        <span><strong>Wallet ID:</strong> <?= htmlspecialchars($wallet->wallet_id) ?></span>
+                        <span><strong>Wallet Address:</strong> <?= htmlspecialchars($wallet->wallet_address) ?></span>
+                        <span><strong>Balance:</strong> <?= htmlspecialchars($wallet->balance) ?></span>
+                        <span><strong>Status:</strong> <?= htmlspecialchars($wallet->status) ?></span>
+                        <span><strong>Notes:</strong> <?= htmlspecialchars($wallet->notes) ?></span>
+                    </div>
+                    <div class="overflow-y-auto space-y-4 w-1/2 h-150">
+                        <?php if (isset($wallet->transactions) && is_array($wallet->transactions) && count($wallet->transactions) > 0): ?>
+                            <?php foreach ($wallet->transactions as $index => $transaction): ?>
+                                <div class="collapse collapse-plus bg-base-200">
+                                    <input type="radio" name="my-accordion" <?= $index === 0 ? 'checked="checked"' : '' ?> />
+                                    <div class="collapse-title text-xl font-medium">
+                                        <span><strong>Transaction ID:</strong> <?= htmlspecialchars($transaction->transaction_id) ?></span>
+                                    </div>
+                                    <div class="collapse-content flex flex-col gap-2">
+                                        <span><strong>Amount:</strong> <?= htmlspecialchars($transaction->amount) ?> <?= htmlspecialchars($transaction->coin->symbol) ?></span>
+                                        <span><strong>Coin:</strong> <?= htmlspecialchars($transaction->coin->coin_name) ?> <?= htmlspecialchars($transaction->coin->symbol) ?></span>
+                                        <span><strong>Transaction Type:</strong> <?= htmlspecialchars($transaction->transaction_type) ?></span>
+                                        <span><strong>Transaction Status:</strong> <?= htmlspecialchars($transaction->status) ?></span>
+                                        <span><strong>Fee:</strong> <?= htmlspecialchars($transaction->fee) ?> <?= htmlspecialchars($transaction->coin->symbol) ?></span>
+                                        <span><strong>Notes:</strong> <?= htmlspecialchars($transaction->notes) ?></span>
+                                        <span><strong>Date:</strong> <?= htmlspecialchars($transaction->transaction_date) ?></span>
+                                        <a href="/transactions/<?= htmlspecialchars($transaction->transaction_id) ?>" class="btn bg-base-300">Go to transaction</a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No transactions yet.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         <?php else: ?>
             <p>Wallet not found.</p>
         <?php endif; ?>
