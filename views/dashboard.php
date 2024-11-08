@@ -29,9 +29,9 @@ function format($amount) {
 
 ?>
 
-<div class="flex flex-col gap-10 p-10 w-full bg-base-100">
+<div class="flex flex-col gap-4 p-10 w-full">
     <div>
-        <h1 id="users" class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>
+        <h1 class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>
         <div class="breadcrumbs text-sm px-2">
             <ul>
                 <li><a href="/"><?= htmlspecialchars($title) ?></a></li>
@@ -39,7 +39,7 @@ function format($amount) {
         </div>
     </div>
 
-    <div class="px-4 space-y-4">
+    <div id="users" class="space-y-2 flex flex-col items-center">
         <h2 class="text-2xl font-bold">Users</h2>
         <?php if (!empty($users)): ?>
             <div class="table divide-y">
@@ -69,51 +69,39 @@ function format($amount) {
         <?php endif; ?>
     </div>
     
-    <div id="coins" class="px-4"> 
-        <div class="flex flex-shrink items-center w-full">
-            <div class="stats stats-vertical p-24 h-180">
-                <?php foreach ($coins as $index => $coin): ?>
-                    <div class="stat min-h-32 text-center">
-                        <span class="stat-title"><?= htmlspecialchars($coin->coin_name) ?> (<?= htmlspecialchars($coin->symbol) ?>)</span>
-                        <span class="stat-value"><?= htmlspecialchars(format($coin->price)) ?></span>
-                        <div class="stat-desc">Gain/Loss: 
-                            <span class="<?= htmlspecialchars($coin->change_percentage) >= 0 ? 'text-green-500' : 'text-red-500' ?>">
-                                <?= htmlspecialchars(format($coin->change_percentage)) ?>%
-                            </span>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            <div class="flex flex-col items-center gap-4 w-275">
-                <h2 class="text-2xl font-bold">Crypto Coins</h2>
-                <div class="carousel carousel-vertical w-full h-180">
-                    <?php if (!empty($coins)): ?>
-                        <?php foreach ($coins as $index => $coin): ?>
-                            <div class="carousel-item card bg-base-200 ">
-                                <div class="card-body flex flex-row">
-                                    <div class="flex flex-col gap-2 h-fit w-1/2">
-                                        <h2 class="card-title"><?= htmlspecialchars($coin->coin_name) ?> (<?= htmlspecialchars($coin->symbol) ?>)</h2>
-                                        <span class="stat-value"><?= htmlspecialchars(format($coin->price)) ?></span>
-                                        <div class="stat-desc">Gain/Loss: 
-                                            <span class="<?= htmlspecialchars($coin->change_percentage) >= 0 ? 'text-green-500' : 'text-red-500' ?>">
-                                                <?= htmlspecialchars(format($coin->change_percentage)) ?>%
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="divider divider-horizontal"></div>
-                                    <div class="flex flex-col items-end gap-2 w-1/2">
-                                        <span class="text-xl">Market Cap: <?= htmlspecialchars(format($coin->market_cap)) ?></span>
-                                        <span class="text-xl">Total supply: <?= htmlspecialchars(format($coin->total_supply)) ?></span>
-                                        <span class="text-xl">Circulating supply: <?= htmlspecialchars(format($coin->circulating_supply)) ?></span>
+    <div id="coins" class="mx-auto"> 
+        <div class="space-y-2 flex flex-col items-center">
+            <h2 class="text-2xl font-bold">Crypto Coins</h2>
+            <div class="carousel max-w-3xl">
+                <?php if (!empty($coins)): ?>
+                    <?php foreach ($coins as $index => $coin): ?>
+                        <div id="slide<?= $index ?>" class="carousel-item flex flex-col w-full">
+                            <div class="stats stats-horizontal flex justify-center">
+                                <div class="stat">
+                                    <h2 class="stat-title"><?= htmlspecialchars($coin->coin_name) ?> (<?= htmlspecialchars($coin->symbol) ?>)</h2>
+                                    <span class="stat-value"><?= htmlspecialchars(format($coin->price)) ?></span>
+                                    <div class="stat-desc">Gain/Loss: 
+                                        <span class="<?= htmlspecialchars($coin->change_percentage) >= 0 ? 'text-green-500' : 'text-red-500' ?>">
+                                            <?= htmlspecialchars(format($coin->change_percentage)) ?>%
+                                        </span>
                                     </div>
                                 </div>
-                                <canvas id="cryptoLineChart<?= $index ?>" width="400" height="200"></canvas>
+                                <div class="stat flex flex-col items-end">
+                                    <span class="stat-title">Market Cap: <?= htmlspecialchars(format($coin->market_cap)) ?></span>
+                                    <span class="stat-title">Total supply: <?= htmlspecialchars(format($coin->total_supply)) ?></span>
+                                    <span class="stat-title">Circulating supply: <?= htmlspecialchars(format($coin->circulating_supply)) ?></span>
+                                </div>
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p class="text-gray-500">No coins available.</p>
-                    <?php endif; ?>
-                </div>
+                            <div class="flex justify-between">
+                                <a href="#slide<?= $index - 1 ?>" class="btn btn-circle">❮</a>
+                                <a href="#slide<?= $index + 1 ?>" class="btn btn-circle">❯</a>
+                            </div>
+                            <canvas id="cryptoLineChart<?= $index ?>"></canvas>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <span>No coins available.</span>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -124,20 +112,23 @@ function format($amount) {
     <?php foreach ($coins as $index => $coin): ?>
         (function() {
             const ctx = document.getElementById('cryptoLineChart<?= $index ?>').getContext('2d');
+            
+            const priceData = [
+                <?php 
+                $prices = array_map(function($price) {
+                    return $price->price; 
+                }, $coin->prices);
+                echo implode(', ', $prices); 
+                ?>
+            ];
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                     datasets: [{
                         label: '<?= htmlspecialchars($coin->coin_name) ?> Price (in USD)',
-                        data: [
-                            <?php 
-                            $prices = array_map(function($price) {
-                                return htmlspecialchars($price->price);
-                            }, $coin->prices);
-                            echo implode(', ', $prices); 
-                            ?>
-                        ],
+                        data: priceData,  
                         fill: false,
                         borderColor: 'rgba(255, 99, 132, 1)',
                         tension: 0.1
@@ -151,19 +142,23 @@ function format($amount) {
                             position: 'top',
                         },
                     },
+                    interaction: {
+                        intersect: false,
+                    },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Price (USD)'
-                            }
-                        },
                         x: {
+                            display: true,
                             title: {
                                 display: true,
                                 text: 'Month'
                             }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Price (USD)'
+                            },
                         }
                     }
                 }

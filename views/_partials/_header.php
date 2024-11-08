@@ -1,9 +1,9 @@
-<header class="sticky top-0 z-50 flex items-center gap-4 p-4 w-full h-20 bg-base-300 duration-300 ease-in-out">
-    <div class="flex justify-around items-center gap-4 p-4">
+<header class="flex justify-evenly gap-4 p-4 w-full sticky top-0 z-50 bg-base-300">
+    <div class="flex justify-around items-center gap-4">
         <label class="btn btn-circle swap swap-rotate">
-            <input type="checkbox" id="menuToggle" />
+            <input type="checkbox" @click="open = ! open" />
             <svg
-                class="swap-on fill-current"
+                class="swap-off fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
                 height="32"
@@ -11,7 +11,7 @@
                 <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
             </svg>
             <svg
-                class="swap-off fill-current"
+                class="swap-on fill-current"
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
                 height="32"
@@ -75,35 +75,8 @@
             </div>
         <?php endif; ?>
     </a>
-    <div class="flex items-center hidden md:flex">
+    <div class="flex items-center">
         <input type="checkbox" id="theme-toggle" class="toggle theme-controller" />
     </div>
 </header>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const themeController = document.querySelector('.theme-controller');
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        const menuToggle = document.getElementById('menuToggle');
-        const menu = document.getElementById('menu');
-
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        themeController.checked = savedTheme === 'dark';
-
-        themeController.addEventListener('change', () => {
-            const theme = themeController.checked ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-        });
-
-        menuToggle.addEventListener('click', () => {
-            if (menu.classList.contains('w-64')) {
-                menu.classList.remove('w-64');
-                menu.classList.add('w-0');
-            } else {
-                menu.classList.remove('w-0');
-                menu.classList.add('w-64');
-            }
-        });
-    });
-</script>

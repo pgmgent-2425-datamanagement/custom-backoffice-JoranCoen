@@ -47,7 +47,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-y-auto space-y-4 w-1/2 h-150">
+                    <div class="space-y-4 w-1/2">
                         <?php if (isset($wallet->transactions) && is_array($wallet->transactions) && count($wallet->transactions) > 0): ?>
                             <?php foreach ($wallet->transactions as $index => $transaction): ?>
                                 <div class="collapse collapse-plus bg-base-200">
@@ -81,7 +81,7 @@
                         <span><strong>Status:</strong> <?= htmlspecialchars($wallet->status) ?></span>
                         <span><strong>Notes:</strong> <?= htmlspecialchars($wallet->notes) ?></span>
                     </div>
-                    <div class="overflow-y-auto space-y-4 w-1/2 h-150">
+                    <div class="space-y-4 w-1/2">
                         <?php if (isset($wallet->transactions) && is_array($wallet->transactions) && count($wallet->transactions) > 0): ?>
                             <?php foreach ($wallet->transactions as $index => $transaction): ?>
                                 <div class="collapse collapse-plus bg-base-200">

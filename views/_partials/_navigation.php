@@ -1,4 +1,4 @@
-<nav id="menu" class="sticky top-20 z-50 self-start h-212 w-64 border-t-2 border-base-100 bg-base-300 overflow-auto duration-300 ease-in-out">
+<nav x-show="open"x-transition:enter.duration.500ms x-transition:leave.duration.400ms class="h-full fixed top-25 z-50 bg-base-300">
     <ul class="menu menu-vertical space-y-2">
         <li>
             <details closed>

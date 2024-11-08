@@ -15,10 +15,10 @@
             $currentUser = $_SESSION['user'] ?? null;
             if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])): 
             ?>
-                <form action="/transaction/<?= htmlspecialchars($transaction->transaction_id) ?>?action=update" method="POST" class="flex gap-10">
+                <form action="/transaction/<?= htmlspecialchars($transaction->transaction_id) ?>?action=update" method="POST">
                     <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction->transaction_id) ?>">
 
-                    <div class="space-y-2 w-1/2">
+                    <div class="space-y-2">
                         <div class="space-y-2">
                             <label for="amount" class="block text-sm font-medium">Amount:</label>
                             <input type="number" id="amount" name="amount" value="<?= htmlspecialchars($transaction->amount) ?>" class="input input-bordered w-full">
@@ -73,7 +73,7 @@
                     </div>
                 </form>
             <?php else: ?>
-                <div class="flex flex-col space-y-4 w-1/2">
+                <div class="flex flex-col space-y-4">
                     <span><strong>Transaction ID:</strong> <?= htmlspecialchars($transaction->transaction_id) ?></span>
                     <span><strong>Amount:</strong> <?= htmlspecialchars($transaction->amount) ?> <?= htmlspecialchars($transaction->coin->symbol) ?></span>
                     <span><strong>Coin:</strong> <?= htmlspecialchars($transaction->coin->coin_name) ?> (<?= htmlspecialchars($transaction->coin->symbol) ?>)</span>

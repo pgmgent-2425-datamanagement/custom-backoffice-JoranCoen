@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4 p-10 w-full">
+<div class="flex flex-col gap-10 p-10 w-full">
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>

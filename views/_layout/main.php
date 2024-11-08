@@ -8,13 +8,28 @@
     <link rel="stylesheet" href="/css/main.css?v=<?php if ($_ENV['DEV_MODE'] == "true") { echo time(); }; ?>">
 </head>
 <body>
+    <div x-data="{ open: false }" class="p-4 max-w-6xl mx-auto">
+        <?php include BASE_DIR . '/views/_partials/_header.php'; ?>
 
-<?php include BASE_DIR . '/views/_partials/_header.php'; ?>
+        <main class="flex">
+            <?php include BASE_DIR . '/views/_partials/_navigation.php'; ?>
+            <?= $content ?>
+        </main>
+    </div>
 
-<main class="flex h-auto">
-    <?php include BASE_DIR . '/views/_partials/_navigation.php'; ?>
-    <?= $content; ?>
-</main>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script>
+        const themeController = document.querySelector('.theme-controller');
+        const savedTheme = localStorage.getItem('theme') || 'light';
 
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeController.checked = savedTheme === 'dark';
+
+        themeController.addEventListener('change', () => {
+            const theme = themeController.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        });
+    </script>   
 </body>
 </html>

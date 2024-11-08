@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-4 p-10 w-full bg-base-100">
+<div class="flex flex-col gap-4 p-10">
     <div>
         <h1 class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>
         <div class="breadcrumbs text-sm px-2">

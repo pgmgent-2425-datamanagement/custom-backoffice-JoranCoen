@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="w-full">
+    <div class="mx-auto">
         <?php if (!empty($wallets)): ?>
             <div class="table divide-y">
                 <div class="table-header-group">
@@ -18,7 +18,9 @@
                         <div class="table-cell px-6 py-3 text-left uppercase tracking-wider font-medium">User ID</div>
                         <div class="table-cell px-6 py-3 text-left uppercase tracking-wider font-medium">Balance</div>
                         <div class="table-cell px-6 py-3 text-left uppercase tracking-wider font-medium">Coin Name</div>
+                        <div class="table-cell px-6 py-3 text-left uppercase tracking-wider font-medium">Wallet Address</div>
                         <div class="table-cell px-6 py-3 text-left uppercase tracking-wider font-medium">Status</div>
+                        <div class="table-cell px-6 py-3 text-left uppercase tracking-wider font-medium">Notes</div>
                     </div>
                 </div>
                 <div class="table-row-group">
@@ -28,7 +30,9 @@
                             <div class="table-cell px-6 py-4"><?= htmlspecialchars($wallet->user->username) ?></div>
                             <div class="table-cell px-6 py-4"><?= htmlspecialchars($wallet->balance) ?> <?= htmlspecialchars($wallet->coin->symbol) ?></div>
                             <div class="table-cell px-6 py-4"><?= htmlspecialchars($wallet->coin->coin_name) ?></div>
+                            <div class="table-cell px-6 py-4"><?= htmlspecialchars($wallet->wallet_address) ?></div>
                             <div class="table-cell px-6 py-4"><?= htmlspecialchars($wallet->status) ?></div>
+                            <div class="table-cell px-6 py-4"><?= htmlspecialchars($wallet->notes) ?></div>
                         </a>
                     <?php endforeach; ?>
                 </div>
