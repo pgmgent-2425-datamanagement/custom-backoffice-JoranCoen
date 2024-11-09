@@ -1,21 +1,40 @@
 <div class="flex flex-col gap-4 p-10 w-full">
-    <div>
-        <h1 class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>
-        <div class="breadcrumbs text-sm px-2">
-            <ul>
-                <li><a href="/">Dashboard</a></li>
-                <li><a href="/transactions">Transactions</a></li>
-                <li><?= htmlspecialchars($title) ?> <?= htmlspecialchars($transaction->transaction_id) ?></li>
-            </ul>
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold"><?= htmlspecialchars($title) ?></h1>
+            <div class="breadcrumbs text-sm px-2">
+                <ul>
+                    <li><a href="/">Dashboard</a></li>
+                    <li><a href="/transactions">Transactions</a></li>
+                    <li><?= htmlspecialchars($title) ?> <?= htmlspecialchars($transaction->transaction_id) ?></li>
+                </ul>
+            </div>
+        </div>
+        <div>
+        <?php if ($transaction): ?>
+            <?php
+                $currentUser = $_SESSION['user'] ?? null;
+                if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])):
+            ?>
+                <form action="/transaction/delete?action=delete" method="POST">
+                    <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction->transaction_id) ?>">
+                    <button type="submit" class="btn">Delete Transaction</button>
+                </form>
+                <?php else: ?>
+                    <span>Can't update / delete Transactions because you are not admin or moderator</span>
+            <?php endif; ?>
+        <?php endif; ?>
         </div>
     </div>
+    
+    
     <div class="px-4">
         <?php if ($transaction): ?>
             <?php 
             $currentUser = $_SESSION['user'] ?? null;
             if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])): 
             ?>
-                <form action="/transaction/<?= htmlspecialchars($transaction->transaction_id) ?>?action=update" method="POST">
+                <form action="/transaction/update?action=update" method="POST">
                     <input type="hidden" name="transaction_id" value="<?= htmlspecialchars($transaction->transaction_id) ?>">
 
                     <div class="space-y-2">
@@ -41,6 +60,11 @@
                                 <option value="buy" <?= htmlspecialchars($transaction->transaction_type) === 'buy' ? 'selected' : '' ?>>Buy</option>
                                 <option value="sell" <?= htmlspecialchars($transaction->transaction_type) === 'sell' ? 'selected' : '' ?>>Sell</option>
                             </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="ref" class="block text-sm font-medium">Ref:</label>
+                            <input type="text" id="ref" name="ref" value="<?= htmlspecialchars($transaction->reference_id) ?>" class="input input-bordered w-full">
                         </div>
 
                         <div class="space-y-2">

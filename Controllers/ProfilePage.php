@@ -23,8 +23,10 @@ class ProfileController extends BaseController {
 
         $user->wallets = $user->getWallets();
 
-        foreach ($user->wallets as $wallet) {
-            $wallet->coin = $wallet->getCoin(); 
+        if (!empty($user->wallets)) {
+            foreach ($user->wallets as $wallet) {
+                $wallet->coin = $wallet->getCoin(); 
+            }
         }
 
         self::loadView('/profile', [

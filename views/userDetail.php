@@ -1,21 +1,45 @@
 <div class="flex flex-col gap-4 p-10 w-full">
-    <div>
-        <h1 class="text-2xl font-bold"><?= htmlspecialchars($title) ?></h1>
-        <div class="breadcrumbs text-sm px-2">
-            <ul>
-                <li><a href="/">Dashboard</a></li>
-                <li><a href="/#users">Users</a></li>
-                <li><?= htmlspecialchars($title) ?> <?= htmlspecialchars($user->user_id) ?></li>
-            </ul>
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold"><?= htmlspecialchars($title) ?></h1>
+            <div class="breadcrumbs text-sm px-2">
+                <ul>
+                    <li><a href="/">Dashboard</a></li>
+                    <li><a href="/#users">Users</a></li>
+                    <li><?= htmlspecialchars($title) ?> <?= htmlspecialchars($user->user_id) ?></li>
+                </ul>
+            </div>
         </div>
-    </div>
+        <div>
+        <?php if ($user): ?>
+            <?php
+                $currentUser = $_SESSION['user'] ?? null;
+                $hasWallets = !empty($user->wallets);
+                if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])):
+            ?>
+                <div class="flex flex-col items-end space-y-2">
+                    <form action="/user/delete?action=delete" method="POST">
+                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user->user_id) ?>">
+                        <button type="submit" class="btn" <?= $hasWallets ? 'disabled' : '' ?>>Delete User</button>
+                    </form>
+                    <?php if ($hasWallets): ?>
+                        <span>Can't delete Users with Wallets.</span>
+                    <?php endif; ?>
+                </div>
+                <?php else: ?>
+                    <span>Can't update / delete User because you are not admin or moderator</span>
+            <?php endif; ?>
+        <?php endif; ?>
+        </div>
+    </div>  
+
     <div class="px-4">
         <?php if ($user): ?>
             <?php 
             $currentUser = $_SESSION['user'] ?? null;
             if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])): 
             ?>
-                <form action="/user/<?= htmlspecialchars($user->user_id) ?>?action=update" method="POST" class="flex gap-10">
+                <form action="/user/update?action=update" method="POST" class="flex gap-10">
                     <input type="hidden" name="user_id" value="<?= htmlspecialchars($user->user_id) ?>">
 
                     <div class="space-y-4 w-1/2">
@@ -32,9 +56,11 @@
                         <div class="space-y-2">
                             <label for="role" class="block text-sm font-medium">Role:</label>
                             <select id="role" name="role" class="select select-bordered w-full">
-                                <option value="user" <?= htmlspecialchars($user->role) === 'user' ? 'selected' : '' ?>>User</option>
-                                <option value="moderator" <?= htmlspecialchars($user->role) === 'moderator' ? 'selected' : '' ?>>Moderator</option>
-                                <option value="admin" <?= htmlspecialchars($user->role) === 'admin' ? 'selected' : '' ?>>Admin</option>
+                                <?php foreach ($roles as $role): ?>
+                                    <option value="<?= htmlspecialchars($role->role_name) ?>" <?= htmlspecialchars($user->role) === $role->role_name ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($role->role_name) ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 

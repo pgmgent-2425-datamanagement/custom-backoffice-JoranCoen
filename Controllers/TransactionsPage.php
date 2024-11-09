@@ -9,27 +9,33 @@ use App\Models\Transaction;
 class TransactionsPageController extends BaseController {
     public static function transactions() {
         $userModel = new User();
+        $coinModel = new Coin();
         $transactionModel = new Transaction();
-
-        $userId = $_SESSION['user']['user_id'] ?? 0;
-
-        $user = $userModel->findById($userId);
-
-        $notifications = $user->getNotifications();
-
-        $transactions = $transactionModel->all();
-
-        foreach ($transactions as $transaction) {
-            $transaction->coin = $transaction->getCoin();
-            $transaction->user = $transaction->getUser();
+    
+        $userId = $_SESSION['user']['user_id'] ?? null;
+        $user = $userId ? $userModel->findById($userId) : null;
+        $notifications = $user ? $user->getNotifications() : [];
+    
+        $users = $userModel->all();
+        foreach ($users as $user) {
+            $user->wallets = $user->getWallets(); 
         }
-
+    
+        $transactions = $transactionModel->all();
+        foreach ($transactions as $transaction) {
+            $transaction->coin = $transaction->getCoin(); 
+            $transaction->user = $transaction->getUser(); 
+        }
+    
         self::loadView('/transactions', [
             'title' => 'Transactions',
+            'coins' => $coinModel->all(),
+            'users' => $users,
             'transactions' => $transactions,
             'notifications' => $notifications
         ]);
     }
+    
 
     public static function detail($id) {
         $userModel = new User();
@@ -37,12 +43,10 @@ class TransactionsPageController extends BaseController {
         $transactionModel = new Transaction();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
-
         $user = $userModel->findById($userId);
         $notifications = $user->getNotifications();
         
         $transaction = $transactionModel->findById($id);
-
         if ($transaction) {
             if (isset($transaction->coin_id)) {
                 $transaction->coin = $transaction->getCoin();

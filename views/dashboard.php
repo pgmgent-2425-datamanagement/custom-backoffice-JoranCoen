@@ -38,9 +38,77 @@ function format($amount) {
             </ul>
         </div>
     </div>
+    <div id="users" class="space-y-2 flex flex-col px-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold">Users</h2>
+            <div>
+                <?php if ($users): ?>
+                    <?php
+                        $currentUser = $_SESSION['user'] ?? null;
+                        if ($currentUser && in_array($currentUser['role'], ['admin', 'moderator'])):
+                    ?>
+                        <button class="btn" onclick="my_modal_2.showModal()">Post User</button>
+                    <?php else: ?>
+                        <span>Can't post Transactions because you are not admin or moderator</span>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+            <dialog id="my_modal_2" class="modal">
+                <div class="modal-box w-11/12 max-w-5xl">
+                    <h3 class="text-lg font-bold">Post Wallet</h3>
+                    <div class="modal-action flex flex-col">
+                        <form action="/user/post?action=post" method="POST" enctype="multipart/form-data" class="px-4">
+                            <div class="space-y-2">
+                                <div class="space-y-2">
+                                    <label for="username" class="block text-sm font-medium">Username:</label>
+                                    <input type="text" id="username" name="username" class="input input-bordered w-full">
+                                </div>
 
-    <div id="users" class="space-y-2 flex flex-col items-center">
-        <h2 class="text-2xl font-bold">Users</h2>
+                                <div class="space-y-2">
+                                    <label for="email" class="block text-sm font-medium">Email:</label>
+                                    <input type="email" id="email" name="email" class="input input-bordered w-full">
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="password" class="block text-sm font-medium">Password:</label>
+                                    <input type="password" id="password" name="password" class="input input-bordered w-full">
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="coin" class="block text-sm font-medium">Status:</label>
+                                    <select id="status" name="status" class="select select-bordered w-full">
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                        <option value="suspended">Suspended</option>
+                                    </select>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="role" class="block text-sm font-medium">Role:</label>
+                                    <select id="role" name="role" class="select select-bordered w-full">
+                                        <?php foreach ($roles as $role): ?>
+                                            <option value="<?= $role->role_name ?>">
+                                                <?= htmlspecialchars($role->role_name) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label for="profile_picture" class="block text-sm font-medium">Profile Picture:</label>
+                                    <input type="file" id="profile_picture" name="profile_picture" class="file-input file-input-bordered w-full max-w-xs">
+                                </div>
+
+                                <button type="submit" class="btn">Post User</button>
+                            </div>
+                        </form>
+                        <form method="dialog">
+                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+        </div>
         <?php if (!empty($users)): ?>
             <div class="table divide-y">
                 <div class="table-header-group">

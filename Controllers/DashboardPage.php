@@ -3,11 +3,13 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Coin;
 
 class DashboardController extends BaseController {
     public static function dashboard() {
         $userModel = new User();
+        $roleModel = new Role();
         $coinModel = new Coin();
 
         $users = $userModel->all();
@@ -25,6 +27,7 @@ class DashboardController extends BaseController {
 
         self::loadView('/dashboard', [
             'title' => 'Dashboard',
+            'roles' => $roleModel->all(),
             'users' => $users,
             'coins' => $coins,
             'notifications' => $notifications
@@ -33,6 +36,7 @@ class DashboardController extends BaseController {
 
     public static function userDetail($id) {
         $userModel = new User();
+        $roleModel = new Role();
 
         $user = $userModel->findById($id);
 
@@ -48,8 +52,11 @@ class DashboardController extends BaseController {
 
             $notifications = $user->getNotifications();
 
+            $roles = $roleModel->all();
+
             self::loadView('/userDetail', [
                 'title' => 'User',
+                'roles' => $roles,
                 'user' => $user,
                 'notifications' => $notifications
             ]);

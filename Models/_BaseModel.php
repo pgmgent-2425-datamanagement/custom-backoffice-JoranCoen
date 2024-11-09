@@ -38,6 +38,45 @@ class BaseModel {
         }
     }
 
+    public function searchAllTables(string $searchTerm): array {
+        $results = [];
+        $tables = $this->getTables();
+
+        foreach ($tables as $table) {
+            $columns = $this->getColumns($table);
+
+            if (empty($columns)) continue;
+
+            $query = "SELECT * FROM `$table` WHERE ";
+            $conditions = [];
+            $params = [':search' => '%' . $searchTerm . '%'];
+
+            foreach ($columns as $column) {
+                $conditions[] = "`$column` LIKE :search";
+            }
+            $query .= implode(' OR ', $conditions);
+
+            $stmt = $this->db->prepare($query);
+            $stmt->execute($params);
+
+            $tableResults = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            if (!empty($tableResults)) {
+                $results[$table] = $tableResults;
+            }
+        }
+
+        return $results;
+    }
+
+    private function getTables(): array {
+        return ['users', 'coins', 'wallets', 'transactions'];
+    }
+
+    private function getColumns(string $table): array {
+        $stmt = $this->db->query("SHOW COLUMNS FROM `$table`");
+        return array_column($stmt->fetchAll(\PDO::FETCH_ASSOC), 'Field');
+    }
+
     public function all(int $limit = 100, int $offset = 0) {
         $sql = 'SELECT * FROM `' . $this->table . '` LIMIT :limit OFFSET :offset';
         $stmt = $this->db->prepare($sql);
@@ -93,6 +132,17 @@ class BaseModel {
     }
 
     public function deleteById(int $id) {
+        if ($this->table === 'users') {
+            $transactionDeleteQuery = $this->db->prepare("DELETE FROM wallets WHERE user_id = :user_id");
+            $transactionDeleteQuery->execute([':user_id' => $id]);
+
+            $transactionDeleteQuery = $this->db->prepare("DELETE FROM transactions WHERE user_id = :user_id");
+            $transactionDeleteQuery->execute([':user_id' => $id]);
+
+            $notificationDeleteQuery = $this->db->prepare("DELETE FROM notifications WHERE user_id = :user_id");
+            $notificationDeleteQuery->execute([':user_id' => $id]);
+        }
+        
         $sql = 'DELETE FROM `' . $this->table . '` WHERE `' . $this->pk . '` = :p_id';
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([':p_id' => $id]);
@@ -110,6 +160,17 @@ class BaseModel {
 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute($data);
+    }
+
+    public function create(array $data) {
+        $columns = implode(', ', array_keys($data));
+        $values = implode(', ', array_map(fn($key) => ":$key", array_keys($data)));
+
+        $sql = "INSERT INTO `{$this->table}` ($columns) VALUES ($values)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($data);
+
+        return $this->db->lastInsertId();
     }
 
     public function authenticate(string $username, string $password) {

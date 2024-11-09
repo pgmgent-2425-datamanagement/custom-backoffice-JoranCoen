@@ -4,8 +4,6 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    last_login DATETIME DEFAULT NULL,
     status ENUM('active', 'inactive', 'suspended') NOT NULL DEFAULT 'active',
     role ENUM('admin', 'user', 'moderator') NOT NULL DEFAULT 'user',
     profile_picture VARCHAR(255) DEFAULT NULL,
@@ -21,7 +19,6 @@ CREATE TABLE IF NOT EXISTS coins (
     circulating_supply DECIMAL(20,2) NOT NULL,
     total_supply DECIMAL(20,2) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     description TEXT DEFAULT NULL,
     PRIMARY KEY (coin_id)
 );
@@ -32,11 +29,9 @@ CREATE TABLE IF NOT EXISTS wallets (
     coin_id INT UNSIGNED NOT NULL,
     balance DECIMAL(20,2) NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     wallet_address VARCHAR(255) NOT NULL,
     status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     notes TEXT DEFAULT NULL,
-    last_transaction_date DATETIME DEFAULT NULL,
     PRIMARY KEY (wallet_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (coin_id) REFERENCES coins(coin_id)
@@ -80,7 +75,6 @@ CREATE TABLE IF NOT EXISTS user_roles (
     role_name VARCHAR(255) NOT NULL,
     permissions TEXT DEFAULT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
     description TEXT DEFAULT NULL,
     parent_role_id INT UNSIGNED DEFAULT NULL,
@@ -94,13 +88,9 @@ CREATE TABLE IF NOT EXISTS notifications (
     notification_id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     user_id INT UNSIGNED NOT NULL,
     message TEXT NOT NULL,
-    is_read BOOLEAN NOT NULL DEFAULT 0,
     type ENUM('info', 'warning', 'alert') NOT NULL DEFAULT 'info',
     reference_id VARCHAR(255) DEFAULT NULL,
-    notes TEXT DEFAULT NULL,
-    expires_at DATETIME DEFAULT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (notification_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
@@ -110,7 +100,6 @@ CREATE TABLE IF NOT EXISTS settings (
     setting_key VARCHAR(255) NOT NULL,
     setting_value TEXT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     description TEXT DEFAULT NULL,
     type ENUM('system', 'user') NOT NULL DEFAULT 'system',
     status ENUM('active', 'inactive') NOT NULL DEFAULT 'active',
@@ -135,13 +124,13 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-INSERT INTO users (username, email, password_hash, last_login, status, role, profile_picture)
+INSERT INTO users (username, email, password_hash, status, role, profile_picture)
 VALUES 
-    ('john_doe', 'john@example.com', 'hashed_password_123', NOW(), 'active', 'user', 'profile1.jpg'),
-    ('jane_doe', 'jane@example.com', 'hashed_password_456', NOW(), 'active', 'admin', 'profile2.jpg'),
-    ('alice', 'alice@example.com', 'hashed_password_789', NULL, 'suspended', 'moderator', 'profile3.jpg'),
-    ('bob_smith', 'bob@example.com', 'hashed_password_234', NOW(), 'active', 'user', 'profile4.jpg'),
-    ('carol', 'carol@example.com', 'hashed_password_567', NULL, 'inactive', 'user', 'profile5.jpg');
+    ('john_doe', 'john@example.com', 'hashed_password_123', 'active', 'user', NULL),
+    ('jane_doe', 'jane@example.com', 'hashed_password_456', 'active', 'admin', NULL),
+    ('alice', 'alice@example.com', 'hashed_password_789', 'suspended', 'moderator', NULL),
+    ('bob_smith', 'bob@example.com', 'hashed_password_234', 'active', 'user', NULL),
+    ('carol', 'carol@example.com', 'hashed_password_567', 'inactive', 'user', NULL);
 
 INSERT INTO coins (coin_name, symbol, market_cap, price, circulating_supply, total_supply, description)
 VALUES 
@@ -188,17 +177,17 @@ VALUES
     (3, 235, '2024-11-01', 240, 230, 2600000, 12500000000, 4.4, 'November record for Litecoin'),
     (3, 240, '2024-12-01', 245, 235, 2700000, 12750000000, 2.1, 'December record for Litecoin');
 
-INSERT INTO wallets (user_id, coin_id, balance, wallet_address, status, notes, last_transaction_date)
+INSERT INTO wallets (user_id, coin_id, balance, wallet_address, status, notes)
 VALUES 
-    (1, 3, 5.0, 'wallet123458', 'active', 'Litecoin wallet', NOW() - INTERVAL 20 DAY),
-    (2, 1, 0.8, 'wallet123459', 'active', 'Bitcoin wallet', NOW() - INTERVAL 15 DAY),
-    (2, 2, 3.0, 'wallet123460', 'active', 'Ethereum wallet', NOW() - INTERVAL 5 DAY),
-    (3, 1, 0.0, 'wallet123461', 'inactive', 'Inactive Bitcoin wallet', NOW() - INTERVAL 30 DAY),
-    (3, 3, 10.0, 'wallet123462', 'active', 'Active Litecoin wallet', NOW() - INTERVAL 25 DAY),
-    (3, 2, 8.0, 'wallet123463', 'active', 'Ethereum wallet', NOW() - INTERVAL 18 DAY),
-    (2, 3, 20.0, 'wallet123464', 'active', 'Litecoin wallet', NOW() - INTERVAL 7 DAY),
-    (1, 2, 25.0, 'wallet123465', 'active', 'Main Ethereum wallet', NOW() - INTERVAL 3 DAY),
-    (1, 1, 10.0, 'wallet123466', 'active', 'Main Bitcoin wallet', NOW() - INTERVAL 1 DAY);
+    (1, 3, 5.0, 'wallet123458', 'active', 'Litecoin wallet'),
+    (2, 1, 0.8, 'wallet123459', 'active', 'Bitcoin wallet'),
+    (2, 2, 3.0, 'wallet123460', 'active', 'Ethereum wallet'),
+    (3, 1, 0.0, 'wallet123461', 'inactive', 'Inactive Bitcoin wallet'),
+    (3, 3, 10.0, 'wallet123462', 'active', 'Active Litecoin wallet'),
+    (3, 2, 8.0, 'wallet123463', 'active', 'Ethereum wallet'),
+    (2, 3, 20.0, 'wallet123464', 'active', 'Litecoin wallet'),
+    (1, 2, 25.0, 'wallet123465', 'active', 'Main Ethereum wallet'),
+    (1, 1, 10.0, 'wallet123466', 'active', 'Main Bitcoin wallet');
 
 INSERT INTO transactions (user_id, wallet_id, coin_id, amount, transaction_type, transaction_date, status, fee, reference_id, notes)
 VALUES 
@@ -228,8 +217,8 @@ VALUES
     ('moderator', 'manage_users, manage_coins', 'Moderator role', 1, 'Can manage users and coins', 2),
     ('user', 'view_profile, view_wallets, view_transactions', 'User role', 2, 'Can view profile, wallets, and transactions', 3);
 
-INSERT INTO notifications (user_id, message, is_read, type, reference_id, notes, expires_at)
+INSERT INTO notifications (user_id, message, type, reference_id)
 VALUES
-    (1, 'Your wallet 1 has been updated.', FALSE, 'info', 'wallet123458', 'Wallet update notification', NOW() + INTERVAL 7 DAY),
-    (2, 'New transaction completed.', FALSE, 'warning', 'REF123475', 'Transaction notification', NOW() + INTERVAL 3 DAY),
-    (3, 'Your account has been suspended.', FALSE, 'alert', NULL, 'Account suspension notification', NOW() + INTERVAL 1 DAY);
+    (1, 'Your wallet 1 has been updated.', 'info', 'wallet123458'),
+    (2, 'New transaction completed.', 'warning', 'REF123475'),
+    (3, 'Your account has been suspended.', 'alert', NULL);

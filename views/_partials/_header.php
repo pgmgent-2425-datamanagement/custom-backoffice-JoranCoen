@@ -22,19 +22,28 @@
         </label>
         <a href="/" class="text-2xl font-bold"><h1>BitVault</h1></a>
     </div>
-    <label class="input input-bordered flex grow items-center gap-2" aria-label="Search input">
-        <input type="text" class="grow" placeholder="Search" aria-label="Search" />
-        <svg
+    <form action="/search?action=post" method="POST" class="input input-bordered flex grow items-center gap-2" aria-label="Search input">
+        <input 
+            id="search" 
+            name="search" 
+            type="text" 
+            class="grow" 
+            placeholder="Search" 
+            aria-label="Search" 
+        />
+        <button type="submit">
+            <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
                 fill="currentColor"
                 class="h-4 w-4 opacity-70">
-            <path
+                <path
                     fill-rule="evenodd"
                     d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
                     clip-rule="evenodd" />
-        </svg>
-    </label>
+            </svg>
+        </button>
+    </form>
     <div>
         <button class="btn" onclick="my_modal_1.showModal()" aria-label="Open notifications">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +77,7 @@
     </div>
     <a href="/profile" class="flex items-center gap-2">
         <?php if (isset($_SESSION['user'])): ?>
-            <img src="<?= htmlspecialchars($_SESSION['user']['profile_picture'] ?? 'https://avatar.iran.liara.run/public') ?>" class="w-10 h-10 rounded-full" alt="avatar" />
+            <img src="<?= htmlspecialchars($_SESSION['user']['profile_picture']) ?>" class="w-10 h-10 rounded-full" alt="avatar" />
             <div class="text-nowrap">
                 <p class="text-lg font-bold"><?= htmlspecialchars($_SESSION['user']['username']) ?></p>
                 <p class="text-xs"><?= htmlspecialchars($_SESSION['user']['role'] ?? 'User') ?></p>

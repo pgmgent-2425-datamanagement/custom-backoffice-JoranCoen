@@ -3,20 +3,20 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use App\Models\Coin;
 use App\Models\Wallet;
 
 class WalletsPageController extends BaseController {
     public static function wallets() {
         $userModel = new User();
+        $coinModel = new Coin();
         $walletModel = new Wallet();
 
         $userId = $_SESSION['user']['user_id'] ?? 0;
-
         $user = $userModel->findById($userId);
         $notifications = $user->getNotifications();
 
         $wallets = $walletModel->all();
-
         foreach ($wallets as &$wallet) {
             if (isset($wallet->coin_id)) {
                 $wallet->coin = $wallet->getCoin();
@@ -28,6 +28,8 @@ class WalletsPageController extends BaseController {
 
         self::loadView('/wallets', [
             'title' => 'Wallets',
+            'coins' => $coinModel->all(),
+            'users' => $userModel->all(),
             'wallets' => $wallets,
             'notifications' => $notifications
         ]);
@@ -35,6 +37,7 @@ class WalletsPageController extends BaseController {
 
     public static function detail($id) {
         $userModel = new User();
+        $coinModel = new Coin();
         $walletModel = new Wallet();
     
         $userId = $_SESSION['user']['user_id'] ?? 0;
@@ -57,6 +60,7 @@ class WalletsPageController extends BaseController {
             self::loadView('/walletDetail', [
                 'title' => 'Wallet',
                 'wallet' => $wallet,
+                'coins' => $coinModel->all(),
                 'notifications' => $notifications
             ]);
         } else {

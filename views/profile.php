@@ -10,7 +10,7 @@
             </div>
         </div>
         <div>
-            <form action="logout?action=logout" method="POST" class="px-4">
+            <form action="logout?action=logout" method="POST">
                 <button type="submit" class="btn">Logout</button>
             </form>
         </div>
@@ -19,13 +19,10 @@
         <?php if ($user): ?>
             <?php 
             $currentUser = $_SESSION['user'] ?? null;
-            $canEdit = $currentUser && (
-                $currentUser['user_id'] === $user->user_id || 
-                in_array($currentUser['role'], ['admin', 'moderator'])
-            );
+            $canEdit = $currentUser && ($currentUser['user_id'] === $user->user_id || in_array($currentUser['role'], ['admin', 'moderator']));
             if ($canEdit): 
             ?>
-                <form action="profile?action=update" method="POST" enctype="multipart/form-data" class="flex gap-10">
+                <form action="profile/update?action=update" method="POST" enctype="multipart/form-data" class="flex gap-10">
                     <input type="hidden" name="user_id" value="<?= htmlspecialchars($user->user_id) ?>">
 
                     <div class="space-y-4 w-1/2">
