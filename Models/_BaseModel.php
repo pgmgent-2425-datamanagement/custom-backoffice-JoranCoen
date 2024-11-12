@@ -38,6 +38,35 @@ class BaseModel {
         }
     }
 
+    public function apiGetAll(string $searchTerm = null) {
+        try {
+            if ($searchTerm) {
+                $results = $this->searchAllTables($searchTerm);
+            } else {
+                $results = $this->all();
+            }
+    
+            return $this->response(200, $results);
+        } catch (\Exception $e) {
+            return $this->response(500, ['error' => $e->getMessage()]);
+        }
+    }
+
+    public function apiCreate(array $data) {
+        try {
+            $id = $this->create($data);
+            return $this->response(201, ['id' => $id, 'message' => 'Created']);
+        } catch (\Exception $e) {
+            return $this->response(500, ['error' => $e->getMessage()]);
+        }
+    }
+
+    protected function response(int $statusCode, array $data) {
+        http_response_code($statusCode);
+        header('Content-Type: application/json');
+        return json_encode($data);
+    }
+
     public function searchAllTables(string $searchTerm): array {
         $results = [];
         $tables = $this->getTables();

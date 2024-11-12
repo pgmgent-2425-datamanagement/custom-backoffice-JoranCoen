@@ -12,8 +12,10 @@
     <div class="px-4">
         <form action="/file-manager/upload" method="POST" enctype="multipart/form-data" class="space-y-2">
             <label for="file" class="block text-sm font-medium">Upload File</label>
-            <input type="file" name="file" id="file" class="file-input file-input-bordered w-full max-w-xs">
-            <button type="submit" name="upload" class="btn ">Upload</button>
+            <div class="flex gap-2">
+                <input type="file" name="file" id="file" class="file-input file-input-bordered w-full max-w-xs">
+                <button type="submit" name="upload" class="btn ">Upload</button>
+            </div>
         </form>
     </div>
 

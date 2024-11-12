@@ -33,6 +33,10 @@ $checkAuth = function () {
 // Define routes
 $router->setNamespace('\App\Controllers');
 
+// API routes
+$router->get('/api/coins', 'ApiController@apiGetAll');
+$router->post('/api/coins', 'ApiController@apiCreate');
+
 // Public routes
 $router->get('/login', 'LoginController@login'); 
 $router->post('/login', 'AuthController@login'); 
@@ -62,7 +66,6 @@ $router->post('/transaction/update', 'TransactionController@update', $checkAuth)
 $router->post('/transaction/delete', 'TransactionController@delete', $checkAuth);
 
 $router->post('/file-manager/upload', 'FileManagerController@upload', $checkAuth);
-
 $router->post('/file-manager/delete', 'FileManagerController@delete', $checkAuth);
 
 $router->post('/search', 'SearchController@search', $checkAuth);

@@ -9,6 +9,11 @@
         </div>
     <div class="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <form class="card-body" action="login?action=login" method="POST">
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="p-2 rounded mb-4">
+                    <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
+                </div>
+            <?php endif; ?>
             <div class="form-control">
                 <label class="label" for="username">
                     <span class="label-text">Username:</span>
@@ -28,11 +33,6 @@
                 <button class="btn btn-primary">Login</button>
             </div>
         </form>
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="p-2 rounded mb-4">
-                <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
-            </div>
-        <?php endif; ?>
     </div>
   </div>
 </div>
